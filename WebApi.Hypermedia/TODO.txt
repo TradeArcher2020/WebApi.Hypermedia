@@ -1,0 +1,7 @@
+﻿TODO: Create a way to configure default HypermediaObject objects for each DTO to be used.  
+For example, if there is a BeerRepresentation DTO being returned, you should be able to define a BeerHypermediaObjectConfiguration 
+object that specifies the default HypermediaObject object to use when the Formatter is serializing the BeerRepresentation object.
+
+It would be nice if the configuration object could use reflection to look for all objects of type IHypermediaObjectConfiguration.
+We could have a HypermediaObjectConfiguration<T> class so the Formatter could search for the registered HypermediaObjectConfiguration<T>
+that matches the type of the current object to be serialized.  
