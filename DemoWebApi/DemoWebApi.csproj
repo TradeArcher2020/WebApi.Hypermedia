@@ -116,7 +116,6 @@
     <Compile Include="Api\BreweriesController.cs" />
     <Compile Include="Api\HypermediaConfigurations\BeerDetailRepresentationHypermediaDataConfiguration.cs" />
     <Compile Include="Api\HypermediaConfigurations\BeerRepresentationHypermediaDataConfiguration.cs" />
-    <Compile Include="Api\HypermediaHandler.cs" />
     <Compile Include="Api\Resources\BeerDetailRepresentation.cs" />
     <Compile Include="Api\Resources\BeerListRepresentation.cs" />
     <Compile Include="Api\Resources\BeerRepresentation.cs" />

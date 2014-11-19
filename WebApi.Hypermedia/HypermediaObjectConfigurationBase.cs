@@ -20,6 +20,7 @@ namespace WebApi.Hypermedia
         protected HypermediaObjectConfigurationBase()
         {
             this._metadata = new MetadataCollection<TDto>();
+            this.Configure();
         }
 
         private MetadataCollection<TDto> _metadata;
@@ -57,7 +58,7 @@ namespace WebApi.Hypermedia
                     //Add the links from the Metadata to the HypermediaObject's Links
                     foreach (var link in value)
                     {
-                        hypermediaObject.Links.Add(link);
+                        hypermediaObject.Medadata.Add(link);
                     }
                 }
             }

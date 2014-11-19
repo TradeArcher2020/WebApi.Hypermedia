@@ -1,14 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
-using System.Web.UI.WebControls;
-using WebApi.Hypermedia;
 
-namespace DemoWebApi.Api
+namespace WebApi.Hypermedia
 {
     public class HypermediaFilter : ActionFilterAttribute
     {
@@ -55,14 +52,14 @@ namespace DemoWebApi.Api
                         if (mergeHypermediaObject != null)
                         {
                             //Do merge
-                            defaultHypermediaObject.Links.UnionWith(mergeHypermediaObject.Links);
+                            defaultHypermediaObject.Medadata.UnionWith(mergeHypermediaObject.Medadata);
                         }
 
                         //If the content itself was already a HypermediaObject, then merge it's links with the defaults from the configuration.
                         var contentHypermediaObject = content.Value as IHypermediaObject;
                         if (contentHypermediaObject != null)
                         {
-                            defaultHypermediaObject.Links.UnionWith(contentHypermediaObject.Links);
+                            defaultHypermediaObject.Medadata.UnionWith(contentHypermediaObject.Medadata);
                         }
 
                         content.Value = defaultHypermediaObject;
@@ -72,21 +69,31 @@ namespace DemoWebApi.Api
                     }
 
                     //Now that the content value is set to a HypermediaObject, we need to process the properties of the encapsulated DTO and map them to HypermediaObjects
-                    this.ProcessDtoProperties((IHypermediaObject)content.Value);
+                    this.ProcessDtoProperties((IHypermediaObject)content.Value, defaultHypermediaObjectConfigurations);
                 }
             }
             base.OnActionExecuted(context);
 
         }
 
-        private void ProcessDtoProperties(IHypermediaObject hypermediaObject, string propertyPath = "")
+        private void ProcessDtoProperties(IHypermediaObject hypermediaObject, Dictionary<Type, IHypermediaObjectConfiguration> defaultHypermediaObjectConfigurations, object dto = null)
         {
-            var dto = hypermediaObject.OriginalDto;
+            if (dto == null)
+            {
+                dto = hypermediaObject.OriginalDto;
+            }
 
             foreach (var property in dto.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public))
             {
-                //propertyPath = property.PropertyType.GetNestedTypes()
-                //hypermediaObject.Data.Add();
+                if (defaultHypermediaObjectConfigurations.ContainsKey(property.PropertyType))
+                {
+                    var propertyValue = property.GetValue(dto);
+                    var defaultHypermediaObjectForDtoType = defaultHypermediaObjectConfigurations[property.PropertyType].Create(propertyValue);
+                    hypermediaObject.NestedMedadata.Add(propertyValue, defaultHypermediaObjectForDtoType);
+
+                    //Recurse into the properties of the current property value and 
+                    ProcessDtoProperties(hypermediaObject, defaultHypermediaObjectConfigurations, propertyValue);
+                }
             }
         }
     }

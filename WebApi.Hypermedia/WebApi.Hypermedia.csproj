@@ -48,12 +48,13 @@
   <ItemGroup>
     <Compile Include="ActionLink.cs" />
     <Compile Include="DocumentationLink.cs" />
+    <Compile Include="HypermediaHandler.cs" />
     <Compile Include="ObjectExtensions.cs" />
     <Compile Include="Formatters\Hal\JsonConverters\JsonHalConverter.cs" />
     <Compile Include="Formatters\Hal\JsonHalMediaTypeFormatter.cs" />
     <Compile Include="HypermediaConfigurationExtensions.cs" />
     <Compile Include="HypermediaObject.cs" />
-    <Compile Include="HypermediaDataConfigurationBase.cs" />
+    <Compile Include="HypermediaObjectConfigurationBase.cs" />
     <Compile Include="Link.cs" />
     <Compile Include="LinkTypes.cs" />
     <Compile Include="MethodTypes.cs" />

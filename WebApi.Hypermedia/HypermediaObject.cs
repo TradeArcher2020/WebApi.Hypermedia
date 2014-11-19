@@ -6,58 +6,21 @@ using System.Web.Http;
 
 namespace WebApi.Hypermedia
 {
-    //public interface IHypermediaObject
-    //{
-    //    HashSet<Link> Links { get; set; }
-    //    object Dto { get; }
-    //}
-    //public class HypermediaObject : IHypermediaObject
-    //{
-    //    private HashSet<Link> _links = new HashSet<Link>();
-    //    private readonly object _dto;
-
-    //    public HypermediaObject()
-    //    {
-    //    }
-
-    //    public HypermediaObject(object dto)
-    //    {
-    //        _dto = dto;
-    //    }
-
-    //    public HypermediaObject(string selfUri, object dto)
-    //    {
-    //        _links.Add(new SelfLink(selfUri));
-    //        _dto = dto;
-    //    }
-
-    //    public object Dto
-    //    {
-    //        get { return _dto; }
-    //    }
-
-    //    public HashSet<Link> Links
-    //    {
-    //        get { return _links; }
-    //        set { _links = value; }
-    //    }
-    //}
-
     public interface IHypermediaObject
     {
-        HashSet<Link> Links { get; set; }
+        HashSet<Link> Medadata { get; set; }
 
         object OriginalDto { get; }
 
-        Dictionary<string, object> Data { get; set; }
+        Dictionary<object, IHypermediaObject> NestedMedadata { get; set; }
     }
 
 
     public class HypermediaObject : IHypermediaObject
     {
-        private HashSet<Link> _links;
+        private HashSet<Link> _medadata = new HashSet<Link>();
         private object _originalDto;
-        private Dictionary<string, object> _data;
+        private Dictionary<object, IHypermediaObject> _nestedMetadata = new Dictionary<object, IHypermediaObject>();
 
         public HypermediaObject()
         {
@@ -73,7 +36,7 @@ namespace WebApi.Hypermedia
 
         public HypermediaObject(string selfUri, object dto) : this(dto)
         {
-            _links.Add(new SelfLink(selfUri));
+            _medadata.Add(new SelfLink(selfUri));
         }
 
 
@@ -84,17 +47,17 @@ namespace WebApi.Hypermedia
         }
 
         //Metadata for this object level (not sub-properties)
-        public HashSet<Link> Links
+        public HashSet<Link> Medadata
         {
-            get { return _links; }
-            set { _links = value; }
+            get { return _medadata; }
+            set { _medadata = value; }
         }
 
         //Sub-properties from OriginalDto converted into other HypermediaObject's
-        public Dictionary<string, object> Data
+        public Dictionary<object, IHypermediaObject> NestedMedadata
         {
-            get { return _data; }
-            set { _data = value; }
+            get { return _nestedMetadata; }
+            set { _nestedMetadata = value; }
         }
 
         //example: OriginalDto is a Customer Object with sub-Property of type Address:
